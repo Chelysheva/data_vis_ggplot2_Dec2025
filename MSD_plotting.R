@@ -1,16 +1,12 @@
 ###Data visualisation with ggplot2
 ##Irina & Rao
-##10.06.2025
+##01.12.2025
 #MSD cytokine dataset
 
 library(tidyverse)
 ####Loading data####
 cyto<-read.csv("MSD_data.csv")
-#Remove negative values
-#cyto <- cyto %>%
-#  filter(if_all(c(IFNy, IL1, IL2, IL10), ~ .x > 0 | is.na(.x)))
-#cyto <- cyto %>%
-#  mutate(across(c(IFNy, IL1, IL2, IL10), ~ ifelse(.x < 0, 0, .x)))
+#Replace negative values with 0.5 of a minimum value, keep NAs for now
 cyto <- cyto %>%
   mutate(across(
     c(IFNy, IL1, IL2, IL10),
@@ -89,11 +85,12 @@ ggplot(cyto_melted, aes(y=value, x=cytokine)) +
               size = 1.2) +
   theme_bw()
 
-#Adding stat
-ggplot(cyto_melted, aes(group=Randomisation, y=log(value), x=cytokine)) + #group is needed for stat_summary function
+#Adding mean and standard deviation
+ggplot(cyto_melted, aes(group=Randomisation, y=logvalue, x=cytokine)) + #group is needed for stat_summary function
   geom_jitter(aes(shape=Randomisation, color=Randomisation), #specifying aes only for jitter
               position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.6),
               size = 1.2) + 
+  scale_y_log10() +
   theme_bw() +
   stat_summary(
                fun.data="mean_sdl",  fun.args = list(mult=1), 
