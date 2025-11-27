@@ -20,8 +20,7 @@ levels(cyto$Randomisation)
 c(1,2) #note the difference
 levels(cyto$Randomisation)<-c("ChAdOx1", "Control")
 
-#Wide to long format
-#Use gather from tidyr
+#Wide to long format - use gather from tidyr
 cyto_melted <- pivot_longer(cyto, cols = -c(ID, Randomisation), names_to = "cytokine", values_to = "value")
 cyto_melted<-na.omit(cyto_melted)
 
@@ -77,7 +76,7 @@ ggplot(cyto_melted, aes(fill=Randomisation, y=value, x=cytokine)) +
 
 #Try: geom_dotplot() - why this is not a best approach for my data?
 
-####Jitter plots####
+#####Jitter plots####
 ggplot(cyto_melted, aes(y=value, x=cytokine)) +
   scale_y_log10() +
   geom_jitter(aes(shape=Randomisation, color=Randomisation), #specifying aes only for jitter
@@ -86,19 +85,19 @@ ggplot(cyto_melted, aes(y=value, x=cytokine)) +
   theme_bw()
 
 #Adding mean and standard deviation
-ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) + #group is needed for stat_summary function
+ggplot(cyto_melted, aes(y=value, x=cytokine)) + 
   geom_jitter(aes(shape=Randomisation, color=Randomisation), #specifying aes only for jitter
               position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.6),
               size = 1.2) + 
   scale_y_log10() +
   theme_bw() +
-  stat_summary(
+  stat_summary(aes(group=Randomisation), #group is needed to allocate the comparison groups because we don't specify them in the parental function
                fun.data="mean_sdl",  fun.args = list(mult=1), 
                geom = "pointrange",  size = 0.4,
                position = position_dodge(0.6), show.legend = F)
 
 ##Finalising graph format
-ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
+ggplot(cyto_melted, aes(y=value, x=cytokine)) +
   scale_y_log10() +
   geom_jitter(aes(color=Randomisation),
               position = position_jitterdodge(jitter.width = 0, dodge.width = 0.5),
@@ -107,7 +106,7 @@ ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
   scale_color_manual(values=c("red","blue")) +
   xlab("") +
   ylab("Cytokine concentration") +
-  stat_summary(
+  stat_summary(aes(group=Randomisation),
     fun.data="mean_sdl",  fun.args = list(mult=1), 
     geom = "pointrange",  size = 0.2,
     position = position_dodge(0.5), show.legend = FALSE, alpha=0.5)
@@ -118,8 +117,9 @@ ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
 library(ggpubr)
 #Summary
 test<-compare_means(data = cyto_melted, formula = value ~ Randomisation, group.by = "cytokine")
+View(test)
 #Adding to the ggplot
-ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
+ggplot(cyto_melted, aes(y=value, x=cytokine)) +
   scale_y_log10() +
   geom_jitter(aes(color=Randomisation),
               position = position_jitterdodge(jitter.width = 0, dodge.width = 0.5),
@@ -128,16 +128,16 @@ ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
   scale_color_manual(values=c("red","blue")) +
   xlab("") +
   ylab("Cytokine concentration") +
-  stat_summary(
+  stat_summary(aes(group=Randomisation),
     fun.data="mean_sdl",  fun.args = list(mult=1), 
     geom = "pointrange",  size = 0.2,
     position = position_dodge(0.5), show.legend = FALSE, alpha=0.5)+
   stat_compare_means(aes(group = Randomisation), method = "wilcox", hide.ns = T, paired = F,
                      label = "p.signif",bracket.size = 0.3)
-#alternatively - try label = "p.format"
+#alternatively - label = "p.format"
 
-library(rstatix)
 #Use p-adjusted values instead
+library(rstatix)
 stat.test <- cyto_melted %>%
   group_by(cytokine) %>%
   wilcox_test(value ~ Randomisation) %>%
@@ -145,8 +145,9 @@ stat.test <- cyto_melted %>%
   add_significance()
 View(stat.test)
 stat.test <- stat.test %>% add_xy_position(x = "cytokine")
+
 #Finalising graph format + stats
-ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
+ggplot(cyto_melted, aes(y=value, x=cytokine)) +
   scale_y_log10() +
   geom_jitter(aes(color=Randomisation),
               position = position_jitterdodge(jitter.width = 0, dodge.width = 0.5),
@@ -155,7 +156,7 @@ ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
   scale_color_manual(values=c("red","blue")) +
   xlab("") +
   ylab("Cytokine concentration") +
-  stat_summary(
+  stat_summary(aes(group=Randomisation),
     fun.data="mean_sdl",  fun.args = list(mult=1), 
     geom = "pointrange",  size = 0.4, alpha = 0.5,
     position = position_dodge(0.5), show.legend = FALSE) +
@@ -163,10 +164,10 @@ ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
 
 #Try: reorder the cytokines on this graph like by alphabet (check out how to reorder factor)
 
-#Create interactive plot
+####Create interactive plot####
 # install.packages("plotly")
 library(plotly)
-p<-ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
+p<-ggplot(cyto_melted, aes(y=value, x=cytokine)) +
   scale_y_log10() +
   geom_jitter(aes(color=Randomisation),
               position = position_jitterdodge(jitter.width = 0, dodge.width = 0.5),
@@ -175,7 +176,7 @@ p<-ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
   scale_color_manual(values=c("red","blue")) +
   xlab("") +
   ylab("Cytokine concentration") +
-  stat_summary(
+  stat_summary(aes(group=Randomisation),
     fun.data="mean_sdl",  fun.args = list(mult=1), 
     geom = "pointrange",  size = 0.4, alpha = 0.5,
     position = position_dodge(0.5), show.legend = FALSE) +
