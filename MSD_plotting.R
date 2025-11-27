@@ -134,7 +134,7 @@ ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) +
     position = position_dodge(0.5), show.legend = FALSE, alpha=0.5)+
   stat_compare_means(aes(group = Randomisation), method = "wilcox", hide.ns = T, paired = F,
                      label = "p.signif",bracket.size = 0.3)
-#alternatively - label = "p.signif"
+#alternatively - try label = "p.format"
 
 library(rstatix)
 #Use p-adjusted values instead
