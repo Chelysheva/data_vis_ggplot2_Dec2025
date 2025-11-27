@@ -1,10 +1,10 @@
 # Data visualisation with ggplot2
 
-## By [Irina Chelysheva](https://github.com/Chelysheva) and [Srinivasa Rao Rao](https://github.com/sraorao)([Oxford profile](https://www.nds.ox.ac.uk/team/srinivasa-rao))
+## By [Irina Chelysheva](https://github.com/Chelysheva)([Oxford profile](https://www.brookes.ac.uk/profiles/staff/irina-chelysheva)) and [Srinivasa Rao Rao](https://github.com/sraorao)([Oxford profile](https://www.nds.ox.ac.uk/team/srinivasa-rao))
 
 This interactive online MSD Skills training course is aimed at MSD postgraduate research students and staff with some programming experience in R who want to expand their skills to create publication quality figures from biological data.
  
-* 10th June @ 10.00am - 1.00pm 
+* 1st December @ 10.00am - 1.00pm 
  
 ## COURSE AIM 
 This half-day course is aimed at intermediate users of R who want to visualise their data with ggplot2 and its extensions.
