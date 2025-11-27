@@ -48,7 +48,7 @@ ggplot(cyto_melted, aes(fill=cytokine, y=value, x=Randomisation)) +
   theme_bw()
 
 #Add error bars
-ggplot(cyto_melted, aes(fill=Randomisation, y=(value), x=cytokine)) + 
+ggplot(cyto_melted, aes(fill=Randomisation, y=value, x=cytokine)) + 
   geom_bar(position="dodge", stat = "summary", fun = "mean") + 
   stat_summary(geom = "errorbar", fun.data = mean_se, 
                position = position_dodge(width = 0.90), width = 0.5) +
@@ -86,7 +86,7 @@ ggplot(cyto_melted, aes(y=value, x=cytokine)) +
   theme_bw()
 
 #Adding mean and standard deviation
-ggplot(cyto_melted, aes(group=Randomisation, y=logvalue, x=cytokine)) + #group is needed for stat_summary function
+ggplot(cyto_melted, aes(group=Randomisation, y=value, x=cytokine)) + #group is needed for stat_summary function
   geom_jitter(aes(shape=Randomisation, color=Randomisation), #specifying aes only for jitter
               position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.6),
               size = 1.2) + 
