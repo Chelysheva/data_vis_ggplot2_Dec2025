@@ -77,7 +77,7 @@ owid_covid %>%
 # NOTE: the following will NOT work, it will give an error
 owid_covid_4countries %>%
   ggplot() +
-  geom_line(mapping = aes(x = date, y = total_deaths_per_million, colour = location))
+  geom_line(mapping = aes(x = date, y = total_deaths_per_million), colour = location)
 
 # Q: What is the difference between the following two lines? Without running the code,
 # can you tell which one will give you the expected result?
